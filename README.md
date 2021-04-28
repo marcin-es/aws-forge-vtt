@@ -9,5 +9,3 @@ Do you want to play but don't want to pay? AWS free tier and few free tools come
 
 # TODO
 - Add ssh key-pair generation
-- Separate security group with necessary ports open
--
