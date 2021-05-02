@@ -9,7 +9,8 @@ Do you want to play but don't want to pay? AWS free tier and few free tools come
 
 ## FAQ
 
-Installation stopped with the following error - what should I do?
+Installation stopped with the similar error - what should I do?
+
 ```
 null_resource.foundry_install (remote-exec): --2021-05-02 08:31:42--  https://foundryvtt.s3.amazonaws.com/releases/0.7.9/foundryvtt-0.7.9.zip?AWSAccessKeyId=AKIAISZIIE42YLQZKLEQ&Signature=jCkZ2%2BZcoBfNCGjifuFvuzxTJvI%3D&Expires=1619939669
 null_resource.foundry_install (remote-exec): Resolving foundryvtt.s3.amazonaws.com (foundryvtt.s3.amazonaws.com)... 52.218.252.11
