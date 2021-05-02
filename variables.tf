@@ -6,3 +6,7 @@ variable "ssh_key_public" {
 variable "local_public_ip" {
   type = string
 }
+
+variable "fvtt_download_link" {
+  type = string
+}

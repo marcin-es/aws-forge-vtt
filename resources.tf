@@ -1,3 +1,7 @@
+locals {
+  config_files_path = "~/foundry_files"
+}
+
 data "aws_ami" "ubuntu" {
   most_recent = true
 
@@ -38,6 +42,15 @@ resource "aws_security_group" "foundry_vtt" {
   }
 
   ingress {
+    description      = "HTTP"
+    from_port        = 30000
+    to_port          = 30000
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  ingress {
     description = "SSH from current public IP address"
     from_port   = 22
     to_port     = 22
@@ -54,7 +67,7 @@ resource "aws_security_group" "foundry_vtt" {
   }
 
   tags = {
-    Name = "allow_tls"
+    Name = "FoundryVTT"
   }
 }
 
@@ -71,22 +84,55 @@ resource "aws_instance" "foundry" {
   tags = {
     Name = "FoundryVTT"
   }
+}
+
+resource "null_resource" "foundry_install" {
+  depends_on = [
+    aws_instance.foundry
+  ]
 
   provisioner "remote-exec" {
     connection {
       type = "ssh"
       user = "ubuntu"
-      host = self.public_ip
+      host = aws_instance.foundry.public_ip
       port = 22
     }
     inline = [
-      # Get nodeJS
-      "sudo apt install -y libssl-dev",
+      # Install nodejs, unzip
+      "sudo apt update",
       "curl -sL https://deb.nodesource.com/setup_14.x | sudo bash -",
-      "sudo apt install -y nodejs",
-      # Get Foundry zip file with wget
-      "sudo apt install -y wget"
+      "sudo apt install libssl-dev unzip nodejs -y",
+      # Install FoundryVTT
+      "mkdir foundryvtt foundrydata ${local.config_files_path}",
+      "cd foundryvtt",
+      "wget -O foundryvtt.zip \"${var.fvtt_download_link}\"",
+      "unzip foundryvtt.zip"
     ]
+  }
 
+  provisioner "file" {
+    connection {
+      type = "ssh"
+      user = "ubuntu"
+      host = aws_instance.foundry.public_ip
+      port = 22
+    }
+    source      = "./files/foundry.service"
+    destination = "${local.config_files_path}/foundry.service"
+  }
+
+  provisioner "remote-exec" {
+    connection {
+      type = "ssh"
+      user = "ubuntu"
+      host = aws_instance.foundry.public_ip
+      port = 22
+    }
+    inline = [
+      "sudo cp ${local.config_files_path}/foundry.service /lib/systemd/system/foundry.service",
+      "sudo systemctl enable foundry.service",
+      "sudo systemctl start foundry.service"
+    ]
   }
 }

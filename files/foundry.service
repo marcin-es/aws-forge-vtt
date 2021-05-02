@@ -1,0 +1,13 @@
+[Unit]
+Description=FoundryVTT
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/foundryvtt/resources/app
+ExecStart=/usr/bin/node main.js --dataPath=/home/ubuntu/foundrydata
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
