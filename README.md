@@ -36,5 +36,4 @@ Look at the 403 Forbidden status code. This implies that the token within the ur
 - Add secure nginx proxy
 - Add ssl generation
 - Allow open traffic only on port 443
-- Add elastic IP
 - Add Cloudflare configuration for public domain

@@ -22,7 +22,6 @@ data "template_file" "nginx_conf" {
   template = file("${path.module}/templates/nginx.conf")
   vars = {
     public_dns = "${aws_instance.foundry.public_dns}"
-    public_ip  = "${aws_instance.foundry.public_ip}"
   }
 }
 
@@ -82,6 +81,10 @@ resource "aws_key_pair" "deployer" {
   public_key = file(var.ssh_key_public)
 }
 
+resource "aws_eip" "foundry_eip" {
+  instance = aws_instance.foundry.id
+}
+
 resource "aws_instance" "foundry" {
   ami             = data.aws_ami.ubuntu.id
   instance_type   = "t3.micro"
@@ -101,7 +104,7 @@ resource "null_resource" "foundry_install" {
     connection {
       type = "ssh"
       user = "ubuntu"
-      host = aws_instance.foundry.public_ip
+      host = aws_eip.foundry_eip.public_ip
       port = 22
     }
     inline = [
@@ -121,7 +124,7 @@ resource "null_resource" "foundry_install" {
     connection {
       type = "ssh"
       user = "ubuntu"
-      host = aws_instance.foundry.public_ip
+      host = aws_eip.foundry_eip.public_ip
       port = 22
     }
     source      = "./files/foundry.service"
@@ -132,7 +135,7 @@ resource "null_resource" "foundry_install" {
     connection {
       type = "ssh"
       user = "ubuntu"
-      host = aws_instance.foundry.public_ip
+      host = aws_eip.foundry_eip.public_ip
       port = 22
     }
     inline = [
@@ -152,7 +155,7 @@ resource "null_resource" "foundry_nginx_proxy" {
     connection {
       type = "ssh"
       user = "ubuntu"
-      host = aws_instance.foundry.public_ip
+      host = aws_eip.foundry_eip.public_ip
       port = 22
     }
     content     = data.template_file.nginx_conf.rendered
@@ -163,7 +166,7 @@ resource "null_resource" "foundry_nginx_proxy" {
     connection {
       type = "ssh"
       user = "ubuntu"
-      host = aws_instance.foundry.public_ip
+      host = aws_eip.foundry_eip.public_ip
       port = 22
     }
     content     = data.template_file.foundry_options.rendered
@@ -174,7 +177,7 @@ resource "null_resource" "foundry_nginx_proxy" {
     connection {
       type = "ssh"
       user = "ubuntu"
-      host = aws_instance.foundry.public_ip
+      host = aws_eip.foundry_eip.public_ip
       port = 22
     }
     inline = [

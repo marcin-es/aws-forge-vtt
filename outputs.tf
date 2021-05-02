@@ -1,7 +1,3 @@
-output "public_ip" {
-  value = aws_instance.foundry.public_ip
-}
-
-output "public_dns" {
+output "your_aws_foundry_url" {
   value = aws_instance.foundry.public_dns
 }
