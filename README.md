@@ -1,7 +1,7 @@
 # aws-foundry-vtt
 Do you want to play but don't want to pay? AWS free tier and few free tools comes to the rescue! Spin yourself a Foundry VTT and enjoy playing first year for free using AWS free tier resources.
 
-## Whatcha you gonna need?
+## Whatcha gonna need?
 - Basic knowledge of command-line, terraform and AWS.
 - A ssh keypair.
 - AWS account with generated access key credentials.
@@ -33,7 +33,7 @@ Look at the 403 Forbidden status code. This implies that the token within the ur
 
 ## TODO
 - Add ssh key-pair generation
-- Add nginx proxy
+- Add secure nginx proxy
 - Add ssl generation
 - Allow open traffic only on port 443
 - Add elastic IP
